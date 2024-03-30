@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Front-end de nuestra API v3</title>
+</head>
+<body>
+    <h1>Front-end de nuestra API v3</h1>
+
+    <div id="login">
+        <h2>Iniciar Sesión</h2>
+        <input type="text" id="usuario" placeholder="Usuario"><br>
+        <input type="password" id="contraseña" placeholder="Contraseña"><br>
+        <button onclick="iniciarSesion()">Iniciar Sesión</button>
+        <p id="error_login"></p>
+    </div>
+
+    <div id="datos_privados" style="display:none">
+        <h2>Datos Privados</h2>
+        <button onclick="obtenerDatosPrivados()">Obtener Datos</button>
+        <p id="datos"></p>
+    </div>
+
+    <div id="eliminar_cuenta" style="display:none">
+        <h2>Eliminar Cuenta</h2>
+        <button onclick="eliminarCuenta()">Eliminar Dato</button>
+        <p id="datos1"></p>
+    </div>
+    
+    <div id="actualizar_datos" style="display:none">
+        <h2>Actualizar Datos</h2>
+        <input type="text" id="clave" placeholder="Clave"><br>
+        <input type="text" id="valor" placeholder="Valor"><br>
+        <button onclick="actualizarDatos()">Actualizar Datos</button>
+        <p id="datos2"></p>
+    </div>
+
+    <div id="exportar_csv" style="display:none">
+        <h2>Exportar a CSV</h2>
+        <button onclick="exportarCSV()">Exportar a CSV</button>
+        <p id="datos3"></p>
+    </div>
+
+    <script>
+        const API_URL = 'http://127.0.0.1:8000'; // URL de la API, donde esta alojado nuestro Back-End
+
+        function iniciarSesion() {
+            const usuario = document.getElementById('usuario').value;
+            const contraseña = document.getElementById('contraseña').value;
+
+            fetch(`${API_URL}/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ usuario, contraseña })
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Inicio de sesión fallido');
+                }
+            })
+            .then(data => {
+                const token = data.token;
+                localStorage.setItem('token', token); // Guardar token en el almacenamiento local
+                document.getElementById('error_login').innerText = data.mensaje;
+                document.getElementById('login').style.display = 'none';
+                document.getElementById('datos_privados').style.display = 'block';
+                document.getElementById('eliminar_cuenta').style.display = 'block';
+                document.getElementById('actualizar_datos').style.display = 'block';
+                document.getElementById('exportar_csv').style.display = 'block';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function obtenerDatosPrivados() {
+            const token = localStorage.getItem('token');
+
+            fetch(`${API_URL}/datos_privados`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': token
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Acceso no autorizado');
+                }
+            })
+            .then(data => {
+                document.getElementById('datos').innerText = data.mensaje;
+                document.getElementById('datos1').innerText = '';
+                document.getElementById('datos2').innerText = '';
+                document.getElementById('datos3').innerText = '';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function eliminarCuenta() {
+            const token = localStorage.getItem('token');
+
+            fetch(`${API_URL}/eliminar_cuenta`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': token
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Acceso no autorizado');
+                }
+            })
+            .then(data => {
+                document.getElementById('datos1').innerText = data.mensaje;
+                document.getElementById('datos').innerText = '';
+                document.getElementById('datos2').innerText = '';
+                document.getElementById('datos3').innerText = '';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+        function actualizarDatos() {
+            const token = localStorage.getItem('token');
+            const clave = document.getElementById('clave').value;
+            const valor = document.getElementById('valor').value;
+
+            fetch(`${API_URL}/actualizar_datos`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': token
+                },
+                body: JSON.stringify({ clave, valor })
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Acceso no autorizado');
+                }
+            })
+            .then(data => {
+                document.getElementById('datos2').innerText = data.mensaje;
+                document.getElementById('datos').innerText = '';
+                document.getElementById('datos1').innerText = '';
+                document.getElementById('datos3').innerText = '';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function exportarCSV() {
+            const token = localStorage.getItem('token');
+
+            fetch(`${API_URL}/exportar_csv`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': token
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Acceso no autorizado');
+                }
+            })
+            .then(data => {
+                document.getElementById('datos3').innerText = data.mensaje;
+                document.getElementById('datos').innerText = '';
+                document.getElementById('datos1').innerText = '';
+                document.getElementById('datos2').innerText = '';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>
