@@ -1,10 +1,12 @@
-##       .o.       ooooooooo.   ooooo o8o          
-##      .888.      `888   `Y88. `888' `YP          
-##     .8"888.      888   .d88'  888   '   .oooo.o 
-##    .8' `888.     888ooo88P'   888      d88(  "8 
-##   .88ooo8888.    888          888      `"Y88b.  
-##  .8'     `888.   888          888      o.  )88b 
-## o88o     o8888o o888o        o888o     8""888P' 
+```
+       .o.       ooooooooo.   ooooo o8o          
+      .888.      `888   `Y88. `888' `YP          
+     .8"888.      888   .d88'  888   '   .oooo.o 
+    .8' `888.     888ooo88P'   888      d88(  "8 
+   .88ooo8888.    888          888      `"Y88b.  
+  .8'     `888.   888          888      o.  )88b 
+ o88o     o8888o o888o        o888o     8""888P' 
+```
 
 Para crear una API con autenticación de usuario, podríamos utilizar un sistema de tokens de acceso. Aquí les dejo un ejemplo básico usando Flask, que es un popular framework de Python para desarrollo web:
 
